@@ -6,13 +6,14 @@ export const getAllNotes = async (req, res) => {
   res.status(200).json(notes);
 };
 
-export const getNoteById = async (req, res) => {
+export const getNoteById = async (req, res,next) => {
   const { noteId } = req.params;
   const note = await Note.findById(noteId);
 
   if (!note) {
     // return res.status(404).json({ message: 'Note not found' });
-    throw createHttpError(404, 'Note not found');
+    next(createHttpError(404, 'Note not found'));
+    return;
   }
   res.status(200).json(note);
 };
