@@ -2,11 +2,61 @@ import { Note } from '../models/note.js';
 import createHttpError from 'http-errors';
 
 export const getAllNotes = async (req, res) => {
-  const notes = await Note.find();
-  res.status(200).json(notes);
+  const {
+    page = 1,
+    perPage = 15,
+    // totalNotes = 150,
+    // totalPages = 10,
+    tag,
+    search,
+    sortBy = '_id',
+    sortOrder = 'asc',
+  } = req.query;
+
+  const pageNumber = Number(page);
+  const perPageNumber = Number(perPage);
+  const skip = (pageNumber - 1) * perPageNumber;
+
+  // const filter = {};
+
+
+  // const skip = (page - 1) * perPage;
+  let notesQuery = Note.find();
+
+
+
+
+  if (tag) {
+    notesQuery = notesQuery.where('tag').equals(tag);
+  }
+
+  if (search) {
+    notesQuery = notesQuery.where('title').regex(new RegExp(search, 'i'));
+  }
+
+ const [totalNotes, notes] = await Promise.all([
+   notesQuery.clone().countDocuments(),
+   notesQuery
+     .skip(skip)
+     .limit(perPageNumber)
+     .sort({ [sortBy]: sortOrder }),
+
+ ]);
+ const totalPages = Math.ceil(totalNotes / perPageNumber);
+
+
+
+  // const notes = await Note.find();
+  res.status(200).json({
+    page,
+    perPage,
+    totalNotes,
+    totalPages,
+    notes,
+  });
 };
 
-export const getNoteById = async (req, res,next) => {
+export const getNoteById = async (req, res, next) => {
   const { noteId } = req.params;
   const note = await Note.findById(noteId);
 
