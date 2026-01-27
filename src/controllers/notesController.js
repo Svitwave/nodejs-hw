@@ -42,8 +42,8 @@ export const getAllNotes = async (req, res) => {
 
   // const notes = await Note.find();
   res.status(200).json({
-    page,
-    perPage,
+    page: pageNumber,
+    perPage: perPageNumber,
     totalNotes,
     totalPages,
     notes,
@@ -66,7 +66,10 @@ export const getNoteById = async (req, res, next) => {
 };
 
 export const createNote = async (req, res) => {
-  const notes = await Note.create(req.body);
+  const notes = await Note.create({
+    ...req.body,
+    userId: req.user._id,
+  });
   res.status(201).json(notes);
 };
 
@@ -103,12 +106,12 @@ export const updateNote = async (req, res, next) => {
   res.status(200).json(note);
 };
 
-export const createNotes = async (req, res) => {
-  const note = await Note.create({
-    ...req.body,
-    // Додаємо властивість userId
-    userId: req.user._id,
-  });
+// export const createNotes = async (req, res) => {
+//   const note = await Note.create({
+//     ...req.body,
+//     // Додаємо властивість userId
+//     userId: req.user._id,
+//   });
 
-  res.status(201).json(note);
-};
+//   res.status(201).json(note);
+// };
