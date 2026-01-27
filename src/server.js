@@ -11,6 +11,11 @@ import { notFoundHandler } from './middleware/notFoundHandler.js';
 import { errorHandler } from './middleware/errorHandler.js';
 import { errors } from 'celebrate';
 import notesRouter from './routes/notesRoutes.js';
+
+import authRoutes from './routes/authRoutes.js';
+// import studentsRoutes from './routes/studentsRoutes.js';
+import cookieParser from 'cookie-parser';
+
 const app = express();
 const PORT = process.env.PORT ?? 3000;
 
@@ -19,11 +24,15 @@ app.use(logger); // 1. Логер першим — бачить усі запи�
 app.use(express.json()); // 2. Парсинг JSON-тіла
 app.use(cors()); // 3. Дозвіл для запитів з інших доменів
 app.use(helmet()); // 4. Безпека HTTP-заголовків
+app.use(cookieParser()); // 5. Парсинг Cookie
 
 app.use((req, res, next) => {
   // console.log('app.use', `${req.method} ${req.url}`);
   next();
 });
+
+app.use(authRoutes);
+// app.use(studentsRoutes);
 
 app.use(notesRouter);
 // 404 — якщо маршрут не знайдено

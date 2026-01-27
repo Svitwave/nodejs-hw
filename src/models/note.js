@@ -17,6 +17,11 @@ const noteSchema = new mongoose.Schema(
       enum: [...TAGS],
       default: 'Todo', // необов’язкове, за замовчуванням Todo
     },
+    userId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User',
+      required: true,
+    },
   },
   { timestamps: true }, // автоматично додає createdAt та updatedAt
 );

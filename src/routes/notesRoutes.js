@@ -14,10 +14,12 @@ import {
   deleteNote,
   updateNote,
 } from '../controllers/notesController.js';
+import { authenticate } from '../middleware/authenticate.js';
 
 const router = Router();
 
 // router.get('/notes', getAllNotes);
+router.use('/students', authenticate);
 router.get('/notes', celebrate(getAllNotesSchema), getAllNotes);
 router.get('/notes/:noteId', celebrate(noteIdSchema), getNoteById);
 router.post('/notes', celebrate(createNoteSchema), createNote);
