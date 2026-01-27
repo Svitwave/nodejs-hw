@@ -59,18 +59,17 @@ export const getNoteById = async (req, res, next) => {
 
   if (!note) {
     // return res.status(404).json({ message: 'Note not found' });
-    next(createHttpError(404, 'Note not found'));
-    return;
+    return next(createHttpError(404, 'Note not found'));
   }
   res.status(200).json(note);
 };
 
 export const createNote = async (req, res) => {
-  const notes = await Note.create({
+  const note = await Note.create({
     ...req.body,
     userId: req.user._id,
   });
-  res.status(201).json(notes);
+  res.status(201).json(note);
 };
 
 export const deleteNote = async (req, res, next) => {
@@ -81,8 +80,7 @@ export const deleteNote = async (req, res, next) => {
   });
 
   if (!note) {
-    next(createHttpError(404, 'Note not found'));
-    return;
+    return next(createHttpError(404, 'Note not found'));
   }
 
   res.status(200).json(note);
@@ -99,19 +97,8 @@ export const updateNote = async (req, res, next) => {
   );
 
   if (!note) {
-    next(createHttpError(404, 'Note not found'));
-    return;
+    return next(createHttpError(404, 'Note not found'));
   }
 
   res.status(200).json(note);
 };
-
-// export const createNotes = async (req, res) => {
-//   const note = await Note.create({
-//     ...req.body,
-//     // Додаємо властивість userId
-//     userId: req.user._id,
-//   });
-
-//   res.status(201).json(note);
-// };
