@@ -1,20 +1,3 @@
-// У src/services/auth.js реалізуйте дві функції:
-
-// createSession(userId) — створює access та refresh токени, створює сесію в базі даних і повертає її;
-// setSessionCookies(res, session) — додає до відповіді три кукі:
-// accessToken
-// refreshToken
-// sessionId
-
-// При встановленні кожної кукі обов’язково використовуйте однакові параметри:
-
-// httpOnly: true
-// secure: true
-// sameSite: 'none'
-// maxAge: для accessToken — 15 хв, для refreshToken і sessionId — 1 день.
-
-// src/services/auth.js
-
 import crypto from 'crypto';
 import { FIFTEEN_MINUTES, ONE_DAY } from '../constants/time.js';
 import { Session } from '../models/session.js';

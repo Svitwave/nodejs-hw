@@ -15,7 +15,6 @@ export const registerUser = async (req, res, next) => {
   // Хешуємо пароль
   const hashedPassword = await bcrypt.hash(password, 10);
 
-  // Створюємо користувача
   const newUser = await User.create({
     email,
     password: hashedPassword,
@@ -28,7 +27,8 @@ export const registerUser = async (req, res, next) => {
   setSessionCookies(res, newSession);
 
   // Відправляємо дані користувача (без пароля) у відповіді
-  res.status(201).json(newUser);
+  res.status(201).json(newUser.toJSON());
+  //  res.status(201).json(newUser);
 };
 
 export const loginUser = async (req, res, next) => {
@@ -55,12 +55,9 @@ export const loginUser = async (req, res, next) => {
   // 3. Викликаємо, передаємо об'єкт відповіді та сесію
   setSessionCookies(res, newSession);
 
-  res.status(200).json(user);
+  res.status(200).json(user.toJSON());
+  //  res.status(201).json(newUser.toJSON());
 };
-
-// src/controllers/authController.js
-
-// Решта коду файла
 
 export const logoutUser = async (req, res) => {
   const { sessionId } = req.cookies;
