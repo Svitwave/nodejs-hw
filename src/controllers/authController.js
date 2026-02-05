@@ -129,36 +129,12 @@ export const requestResetEmail = async (req, res, next) => {
     });
   }
 
-  // res.status(200).json({
-  //   message: 'Password reset email sent successfully',
-  // });
-
   // Користувач є — генеруємо короткоживучий JWT і відправляємо лист
   const resetToken = jwt.sign(
     { sub: user._id, email },
     process.env.JWT_SECRET,
     { expiresIn: '15m' },
   );
-
-  // try {
-  //   await sendEmail({
-  //     from: process.env.SMTP_FROM,
-  //     to: email,
-  //     subject: 'Reset your password',
-  //     html: `<p>Click <a href="${resetToken}">here</a> to reset your password!</p>`,
-  //   });
-  // } catch {
-  //   next(
-  //     createHttpError(500, 'Failed to send the email, please try again later.'),
-  //   );
-  //   return;
-  // }
-
-  // Та сама "нейтральна" відповідь
-  res.status(200).json({
-    message: 'If this email exists, a reset link has been sent',
-  });
-  // };
 
   const templatePath = path.resolve('src/templates/reset-password-email.html');
   // 2. Читаємо шаблон
