@@ -17,3 +17,11 @@ export const loginUserSchema = {
     password: Joi.string().required(),
   }),
 };
+
+//Перевіряємо, що в тілі є коректний email для запиту на відновлення пароля
+
+export const requestResetEmailSchema = {
+  [Segments.BODY]: Joi.object({
+    email: Joi.string().email().required(),
+  }),
+};
