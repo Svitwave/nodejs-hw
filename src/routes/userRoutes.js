@@ -10,7 +10,6 @@ router.patch(
   authenticate,
   upload.single('avatar'),
   updateUserAvatar,
-  updateUserAvatar,
 );
 
 export default router;

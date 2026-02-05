@@ -5,8 +5,6 @@ export const getAllNotes = async (req, res) => {
   const {
     page = 1,
     perPage = 15,
-    // totalNotes = 150,
-    // totalPages = 10,
     tag,
     search,
     sortBy = '_id',
@@ -17,9 +15,6 @@ export const getAllNotes = async (req, res) => {
   const perPageNumber = Number(perPage);
   const skip = (pageNumber - 1) * perPageNumber;
 
-  // const filter = {};
-
-  // const skip = (page - 1) * perPage;
   let notesQuery = Note.find({ userId: req.user._id });
 
   if (tag) {
@@ -27,7 +22,6 @@ export const getAllNotes = async (req, res) => {
   }
 
   if (search) {
-    // notesQuery = notesQuery.where('title').regex(new RegExp(search, 'i'));
     notesQuery = notesQuery.find({ $text: { $search: search } });
   }
 
@@ -40,7 +34,6 @@ export const getAllNotes = async (req, res) => {
   ]);
   const totalPages = Math.ceil(totalNotes / perPageNumber);
 
-  // const notes = await Note.find();
   res.status(200).json({
     page: pageNumber,
     perPage: perPageNumber,
@@ -58,7 +51,6 @@ export const getNoteById = async (req, res, next) => {
   });
 
   if (!note) {
-    // return res.status(404).json({ message: 'Note not found' });
     return next(createHttpError(404, 'Note not found'));
   }
   res.status(200).json(note);
