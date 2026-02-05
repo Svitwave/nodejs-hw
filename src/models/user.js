@@ -1,5 +1,3 @@
-// src/models/user.js
-
 import { model, Schema } from 'mongoose';
 
 const userSchema = new Schema(
@@ -18,6 +16,11 @@ const userSchema = new Schema(
       type: String,
       required: true,
       minlength: [8, 'The password must be at least 8 characters long'],
+    },
+    avatar: {
+      type: String,
+      required: false,
+      default: '<https://ac.goit.global/fullstack/react/default-avatar.jpg>',
     },
   },
   { timestamps: true, versionKey: false },

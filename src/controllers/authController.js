@@ -33,7 +33,7 @@ export const registerUser = async (req, res, next) => {
 
   // Відправляємо дані користувача (без пароля) у відповіді
   res.status(201).json(newUser.toJSON());
-  //  res.status(201).json(newUser);
+
 };
 
 export const loginUser = async (req, res, next) => {
@@ -61,7 +61,7 @@ export const loginUser = async (req, res, next) => {
   setSessionCookies(res, newSession);
 
   res.status(200).json(user.toJSON());
-  //  res.status(201).json(newUser.toJSON());
+
 };
 
 export const logoutUser = async (req, res) => {
@@ -164,5 +164,46 @@ export const requestResetEmail = async (req, res, next) => {
 
   res.status(200).json({
     message: 'If this email exists, a reset link has been sent',
+  });
+};
+
+// Контролер для скидання пароля
+
+export const resetPassword = async (req, res, next) => {
+  const { token, password } = req.body;
+
+  // 1. Перевіряємо/декодуємо токен
+  let payload;
+  try {
+    payload = jwt.verify(token, process.env.JWT_SECRET);
+  } catch {
+    // Повертаємо помилку якщо проблема при декодуванні
+    next(createHttpError(401, 'Invalid or expired token'));
+    return;
+  }
+
+  // 2. Шукаємо користувача
+  const user = await User.findOne({ _id: payload.sub, email: payload.email });
+  if (!user) {
+    next(createHttpError(404, 'User not found'));
+    return;
+  }
+
+  // 3. Якщо користувач існує
+  // створюємо новий пароль і оновлюємо користувача
+  const hashedPassword = await bcrypt.hash(password, 10);
+  await User.updateOne({ _id: user._id }, { password: hashedPassword });
+
+  // 4. Видаляємо всі можливі попередні сесії користувача
+  await Session.deleteMany({ userId: user._id });
+
+  // видалення cookies з клієнтської сторони
+  res.clearCookie('sessionId');
+  res.clearCookie('accessToken');
+  res.clearCookie('refreshToken');
+
+  // 5. Повертаємо успішну відповідь
+  res.status(200).json({
+    message: 'Password reset successfully. Please log in again.',
   });
 };
